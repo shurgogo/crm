@@ -1,10 +1,10 @@
-package org.example.crm;
+package org.example.crm.controller;
 
 import org.example.crm.base.BaseController;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class IndexController extends BaseController {
 
     /**
