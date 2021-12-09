@@ -1,22 +1,28 @@
-import { useContext } from "react";
-import { context } from "../../components/AuthProvider";
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, Form, Input, Button, Checkbox, message } from "antd"
 import { UserOutlined, LockOutlined } from "@ant-design/icons"
+import { User, useAuth } from '../../components/AuthProvider';
 import './Login.css'
 
 function Login() {
-  const {setIsLogged} = useContext<any>(context)
+  let navigate = useNavigate()
+  let auth = useAuth()
+  let location = useLocation()
+
+  let from = location.state?.from?.pathname || "/"
 
   const onFinish = (values: any) => {
-    console.log("Received values of form: ", values);
+    console.log("Received values of form: ", values)
+    let user: User = { ...values }
+    console.log(user.username + user.password)
     if (values['username'] === "123" && values['password'] === "123") {
-      message.destroy()
+      // message.destroy()
       message.success({
         content: "Login success!",
       })
-      setIsLogged(true)
+      auth.signin(user, () => navigate(from, { replace: true }))
     } else {
-      message.destroy()
+      // message.destroy()
       message.error({
         content: "Incorrect username or password!",
       })

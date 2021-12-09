@@ -1,29 +1,57 @@
-import React from 'react'
-import { Navigate, useRoutes } from 'react-router-dom';
-import Dashboard from './pages/Dashboard';
+import { Navigate, useRoutes } from 'react-router-dom'
+import Dashboard from './pages/Dashboard'
 import PageNotFound from './pages/PageNotFound'
-import Login from './pages/Login/Login';
-import RequireAuth from './components/ProtectedRouter';
-import Customer from './pages/Customer/Customer';
+import Login from './pages/Login/Login'
+import Services from './pages/Services/Services'
+import Reports from './pages/Reports/Reports'
+import Settings from './pages/Settings/Settings'
+import MktOpp from './pages/Marketing/MktOpp'
+import CtmDev from './pages/Marketing/CtmDev'
 
 function App() {
-  let element = useRoutes([
-    { path: '/', element: <Navigate to='login' replace /> },
-    { path: '/login', element: <Login /> },
+  const element = useRoutes([
     {
-      path: '/main',
+      path: '/',
+      element: <Navigate to='login' />
+    },
+    {
+      path: 'login',
+      element: <Login />
+    },
+    {
+      path: 'main',
       element: <Dashboard />,
       children: [
-        { path: 'customer', element: <Customer/> }
+        {
+          path: 'mktopp',
+          element: <MktOpp />,
+          index: true
+        },
+        {
+          path: 'ctmdev',
+          element: <CtmDev />,
+        },
+
+        {
+          path: 'services',
+          element: <Services />,
+        },
+        {
+          path: 'reports',
+          element: <Reports />,
+        },
+        {
+          path: 'settings',
+          element: <Settings />,
+        },
       ]
     },
     {
-      path: '/protected',
-      element: <RequireAuth><Dashboard /></RequireAuth>
+      path: '*',
+      element: <PageNotFound />
     },
-    { path: '*', element: <PageNotFound /> }
   ])
-  return element
+  return (element)
 }
 
 

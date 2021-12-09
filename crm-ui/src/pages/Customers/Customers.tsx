@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Customer() {
+function Customers() {
   return (
     <div>
       <h1>用户</h1>
@@ -8,4 +8,4 @@ function Customer() {
   )
 }
 
-export default Customer
+export default Customers

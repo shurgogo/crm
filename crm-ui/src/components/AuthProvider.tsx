@@ -1,23 +1,39 @@
-import { useState, createContext, useEffect } from "react";
-import { useNavigate } from "react-router";
+import React from "react";
 
-export const context = createContext({})
+export type User = { username: string, password: string }
+interface AuthContextType {
+  token: string
+  signin: (user: User, callback: VoidFunction) => void
+  signout: (callback: VoidFunction) => void
+}
 
-function AuthProvider({children}: any) {
-  const [isLogged, setIsLogged] = useState(false)
-  const to = useNavigate()
-  useEffect(() => {
-    if (isLogged == true) {
-      to('/main')
-    } else {
-      to('/login')
-    }
-  }, [isLogged])
+let AuthContext = React.createContext<AuthContextType>(null!);
+
+export default function AuthProvider({ children }: { children: React.ReactNode }) {
+  let [token, setToken] = React.useState<string>('')
+
+  let signin = (newUser: User, callback: VoidFunction) => {
+    console.log('登入')
+    //ToDo 调用后端接口获得token
+    setToken(newUser.username + newUser.password)
+    callback()
+  }
+  let signout = (callback: VoidFunction) => {
+    console.log('登出')
+    //ToDo 调用后端接口获得token
+    setToken('')
+    callback()
+  }
+
+  let value = { token, signin, signout }
+
   return (
-    <context.Provider value={{ isLogged, setIsLogged }}>
+    <AuthContext.Provider value={value}>
       {children}
-    </context.Provider>
+    </AuthContext.Provider>
   )
 }
 
-export default AuthProvider
+export function useAuth() {
+  return React.useContext(AuthContext)
+}
