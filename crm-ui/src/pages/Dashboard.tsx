@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Link, Outlet } from 'react-router-dom'
-import { Layout, Menu } from 'antd'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
+import { Layout, Menu, Tabs } from 'antd'
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -14,30 +14,113 @@ import {
   BarChartOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-import AuthComsumer from '../components/AuthComsumer'
+// import AuthComsumer from '../components/AuthComsumer'
 import './Dashboard.css'
-// import SubMenu from 'antd/lib/menu/SubMenu';
+import UserDropdown from '../components/UserDropdown';
 
 
-const { Header, Sider, Content } = Layout;
+const { Header, Sider, Footer } = Layout;
 const { SubMenu } = Menu
 
-function Dashboard() {
+const { TabPane } = Tabs;
 
+export type Pane = {
+  title: string,
+  key: string,
+  closable?: boolean,
+}
+
+type PaneActive = {
+  activeKey: string,
+  panes: Pane[]
+}
+
+const allPanes: Pane[] = [
+  { title: '首页', key: '/main', closable: false },
+  { title: '营销机会管理', key: '/main/mktopp', closable: true },
+  { title: '客户开发计划', key: '/main/ctmdev', closable: true },
+]
+
+
+function Dashboard() {
+  const navigate = useNavigate()
   let [collapsed, setCollapsed] = useState(false)
 
-  return (
+  let initialState = {
+    activeKey: '/main',
+    panes: [{ title: '首页', key: '/main', closable: false },]
+  }
 
+  const [paneState, setPaneState] = useState<PaneActive>(initialState)
+
+  let onChange = (key: string) => {
+    setPaneState({ activeKey: key, panes: paneState.panes });
+    navigate(key)
+  };
+
+  let onEdit = (targetKey: any, action: 'add' | 'remove') => {
+    if (action === 'add') {
+      // add()
+    } else if (action === 'remove') {
+      removePane(targetKey)
+    }
+  };
+
+  let addPane = (key: string) => {
+    let { panes } = paneState;
+    let newPane = allPanes.filter((pane) => pane.key === key)[0]
+    let exist = panes.findIndex((pane) => { return pane.key === newPane.key }) !== -1
+
+    if (newPane && !exist) {
+      panes.push(newPane)
+    }
+    setPaneState({
+      panes: panes,
+      activeKey: key,
+    });
+  };
+
+  let removePane = (targetKey: string) => {
+    const { panes, activeKey } = paneState;
+    let newActiveKey = activeKey;
+    let lastIndex = 0;
+    panes.forEach((pane, i) => {
+      if (pane.key === targetKey) {
+        lastIndex = i - 1;
+      }
+    });
+    const newPanes = panes.filter(pane => pane.key !== targetKey);
+    if (newPanes.length && newActiveKey === targetKey) {
+      if (lastIndex >= 0) {
+        newActiveKey = newPanes[lastIndex].key;
+      } else {
+        newActiveKey = newPanes[0].key;
+      }
+    }
+    setPaneState({
+      panes: newPanes,
+      activeKey: newActiveKey,
+    });
+    navigate(newActiveKey)
+  };
+
+  const { panes, activeKey } = paneState;
+  return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo" />
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+        <Menu
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={['1']}
+          onClick={(e) => addPane(e.key)}
+        >
           <SubMenu key="1" title="市场营销" icon={<AccountBookOutlined />}>
-            <Menu.Item key="1-1" icon={<PhoneOutlined />}>
+            <Menu.Item key="/main/mktopp" icon={<PhoneOutlined />}>
               营销机会管理
-              <Link to='mktopp'></Link>
+              <Link to='/main/mktopp'></Link>
             </Menu.Item>
-            <Menu.Item key="1-2" icon={<UserAddOutlined />}>
+            <Menu.Item key="/main/ctmdev" icon={<UserAddOutlined />}>
               客户开发计划
               <Link to='ctmdev'></Link>
             </Menu.Item>
@@ -62,17 +145,34 @@ function Dashboard() {
             className: 'trigger',
             onClick: () => setCollapsed(!collapsed)
           })}
+          <UserDropdown />
         </Header>
-        <Content
-          className="site-layout-background"
-          style={{
-            margin: '24px 16px',
-            padding: 24,
-            minHeight: 280,
-          }}
-        >
-          <Outlet />
-        </Content>
+        <Layout style={{ padding: '0 24px 24px' }}>
+          <Tabs
+            type="editable-card"
+            hideAdd
+            onChange={onChange}
+            activeKey={activeKey}
+            onEdit={onEdit}
+          >
+            {panes.map(pane => (
+              <TabPane
+                tab={<Link to={pane.key}>{pane.title}</Link>}
+                key={pane.key}
+                closable={pane.closable}
+                className="site-layout-background"
+                style={{
+                  margin: '24px 16px',
+                  padding: 24,
+                  minHeight: 280,
+                }}
+              >
+                <Outlet />
+              </TabPane>
+            ))}
+          </Tabs>
+        </Layout>
+        <Footer style={{ textAlign: 'center' }}>CRM ©2021 Created by solar-zhou</Footer>
       </Layout>
     </Layout>
 

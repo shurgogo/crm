@@ -9,24 +9,29 @@ function Login() {
   let auth = useAuth()
   let location = useLocation()
 
-  let from = location.state?.from?.pathname || "/"
+  let from = location.state?.from?.pathname || "/main"
 
   const onFinish = (values: any) => {
     console.log("Received values of form: ", values)
     let user: User = { ...values }
     console.log(user.username + user.password)
-    if (values['username'] === "123" && values['password'] === "123") {
-      // message.destroy()
-      message.success({
-        content: "Login success!",
-      })
-      auth.signin(user, () => navigate(from, { replace: true }))
-    } else {
-      // message.destroy()
-      message.error({
-        content: "Incorrect username or password!",
-      })
-    }
+    
+    message.success({
+      content: "Login success!",
+    })
+    auth.signin(user, () => navigate(from, { replace: true }))
+    // if (values['username'] === "admin" && values['password'] === "admin") {
+    //   // message.destroy()
+    //   message.success({
+    //     content: "Login success!",
+    //   })
+    //   auth.signin(user, () => navigate(from, { replace: true }))
+    // } else {
+    //   // message.destroy()
+    //   message.error({
+    //     content: "Incorrect username or password!",
+    //   })
+    // }
   };
 
 
@@ -61,16 +66,16 @@ function Login() {
             <Checkbox>Remember me</Checkbox>
           </Form.Item>
 
-          <a className="login-form-forgot" href="">
+          {/* <a className="login-form-forgot" href="">
             Forgot password
-          </a>
+          </a> */}
         </Form.Item>
 
         <Form.Item>
           <Button type="primary" htmlType="submit" className="login-form-button">
             Log in
           </Button>
-          Or <a href="">register now!</a>
+          {/* Or <a href="">register now!</a> */}
         </Form.Item>
       </Form>
     </Card>
