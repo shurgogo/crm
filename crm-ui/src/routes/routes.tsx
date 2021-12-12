@@ -56,7 +56,7 @@ export const mainRoutes: MyRoute[] = [
   {
     title: '营销管理',
     path: 'mkt',
-    element: <Marketing />,
+    // element: <Marketing />,
     icon: <AccountBookOutlined />,
     children: [
       { title: '营销机会管理', path: 'mktopp', element: <MarketingOpportunity />, icon: <PhoneOutlined />, },
@@ -66,7 +66,7 @@ export const mainRoutes: MyRoute[] = [
   {
     title: '客户管理',
     path: 'ctm',
-    element: <Customers />,
+    // element: <Customers />,
     icon: <UserOutlined />,
     children: [
       { title: '客户信息管理', path: 'infmng', element: <CustomerInfo />, icon: <UserSwitchOutlined />, },
@@ -76,7 +76,7 @@ export const mainRoutes: MyRoute[] = [
   {
     title: '服务管理',
     path: 'srv',
-    element: <Services />,
+    // element: <Services />,
     icon: <CustomerServiceOutlined />,
     children: [
       { title: '服务创建', path: 'create', element: <ServiceCreate />, icon: <AppstoreAddOutlined />, },
@@ -89,7 +89,7 @@ export const mainRoutes: MyRoute[] = [
   {
     title: '统计报表',
     path: 'rpt',
-    element: <Reports />,
+    // element: <Reports />,
     icon: <BarChartOutlined />,
     children: [
       { title: '客户贡献分析', path: 'ctmctb', element: <CustomerDevelop />, icon: <RiseOutlined />, },
@@ -101,7 +101,7 @@ export const mainRoutes: MyRoute[] = [
   {
     title: '系统设置',
     path: 'set',
-    element: <Settings />,
+    // element: <Settings />,
     icon: <SettingOutlined />,
     children: [
       { title: '字典管理', path: 'dicmng', element: <CustomerDevelop />, icon: <SortAscendingOutlined />, },

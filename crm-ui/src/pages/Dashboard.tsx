@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, Outlet, Route, Routes, useNavigate } from 'react-router-dom'
+import { Link, Outlet, Route, Routes, useNavigate, useRoutes } from 'react-router-dom'
 import { Layout, Menu, Tabs } from 'antd'
 import {
   MenuUnfoldOutlined,
@@ -10,6 +10,7 @@ import './Dashboard.css'
 import UserDropdown from '../components/UserDropdown';
 import { mainRoutes } from '../routes/routes';
 import { findTitleByRelativeRoutes } from '../utils/utils';
+import Welcome from './Welcome/Welcome';
 
 const { Header, Sider, Footer } = Layout;
 const { SubMenu } = Menu
@@ -33,6 +34,11 @@ const initialState = {
 }
 
 function Dashboard() {
+  let route = useRoutes([
+    {
+      path: 'wlc',
+      element: <Welcome />,
+    }, ...mainRoutes])
   let navigate = useNavigate()
   //Sider折叠
   let [collapsed, setCollapsed] = useState(false)
@@ -114,18 +120,7 @@ function Dashboard() {
   let { panes, activeKey } = paneState;
   return (
     <div>
-      <Routes>
-        {mainRoutes.map(route => {
-          return (
-            <Route key={route.path} path={route.path} element={route.element}>
-              {route.children?.map(child => {
-                return <Route key={child.path} path={child.path} element={child.element} />
-              }
-              )}
-            </Route>
-          )
-        })}
-      </Routes>
+
       <Layout>
         <Sider trigger={null} collapsible collapsed={collapsed}>
           <div className="logo" />
@@ -179,7 +174,7 @@ function Dashboard() {
                     minHeight: 280,
                   }}
                 >
-                  <Outlet />
+                  {route}
                 </TabPane>
               ))}
             </Tabs>

@@ -7,13 +7,13 @@ function Marketing() {
   return (
     <div>
       <h1>营销管理</h1>
-      <Routes>
+      {/* <Routes>
         {mainRoutes.filter(mainRoute => {return mainRoute.path === 'mkt'})[0]
         .children?.map(mktRoute => {
           console.log(mktRoute.path)
           return <Route key={mktRoute.path} path={mktRoute.path} element={mktRoute.element}/>
         })}
-      </Routes>
+      </Routes> */}
     </div>
   )
 }
