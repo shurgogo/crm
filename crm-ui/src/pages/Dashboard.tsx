@@ -1,23 +1,15 @@
 import React, { useState } from 'react'
-import { Link, Outlet, useNavigate } from 'react-router-dom'
+import { Link, Outlet, Route, Routes, useNavigate } from 'react-router-dom'
 import { Layout, Menu, Tabs } from 'antd'
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
-
-  AccountBookOutlined,
-  PhoneOutlined,
-  UserAddOutlined,
-
-  UserOutlined,
-  CustomerServiceOutlined,
-  BarChartOutlined,
-  SettingOutlined,
 } from '@ant-design/icons';
 // import AuthComsumer from '../components/AuthComsumer'
 import './Dashboard.css'
 import UserDropdown from '../components/UserDropdown';
-
+import { mainRoutes } from '../routes/routes';
+import { findTitleByRelativeRoutes } from '../utils/utils';
 
 const { Header, Sider, Footer } = Layout;
 const { SubMenu } = Menu
@@ -35,28 +27,29 @@ type PaneActive = {
   panes: Pane[]
 }
 
-const allPanes: Pane[] = [
-  { title: '首页', key: '/main', closable: false },
-  { title: '营销机会管理', key: '/main/mktopp', closable: true },
-  { title: '客户开发计划', key: '/main/ctmdev', closable: true },
-]
-
+const initialState = {
+  activeKey: 'wlc',
+  panes: [{ title: '首页', key: 'wlc', closable: false },]
+}
 
 function Dashboard() {
-  const navigate = useNavigate()
+  let navigate = useNavigate()
+  //Sider折叠
   let [collapsed, setCollapsed] = useState(false)
+  let [paneState, setPaneState] = useState<PaneActive>(initialState)
 
-  let initialState = {
-    activeKey: '/main',
-    panes: [{ title: '首页', key: '/main', closable: false },]
-  }
-
-  const [paneState, setPaneState] = useState<PaneActive>(initialState)
-
+  //点击tab显示内容
   let onChange = (key: string) => {
     setPaneState({ activeKey: key, panes: paneState.panes });
     navigate(key)
   };
+
+  let menuOnClick = (e: any) => {
+    let newRoute = e.keyPath.reverse().join('/')
+    let title = findTitleByRelativeRoutes(newRoute.split('/'))
+    addPane(title, newRoute)
+    navigate(newRoute)
+  }
 
   let onEdit = (targetKey: any, action: 'add' | 'remove') => {
     if (action === 'add') {
@@ -65,13 +58,15 @@ function Dashboard() {
       removePane(targetKey)
     }
   };
-
-  let addPane = (key: string) => {
+  // 点击导航增加pane，key是相对路由
+  let addPane = (title: string, key: string) => {
     let { panes } = paneState;
-    let newPane = allPanes.filter((pane) => pane.key === key)[0]
-    let exist = panes.findIndex((pane) => { return pane.key === newPane.key }) !== -1
+    let exist = panes.findIndex(pane => { return pane.key === key }) !== -1
 
-    if (newPane && !exist) {
+    if (!exist) {
+      let newPane: Pane = {
+        title: title, key: key, closable: false,
+      }
       panes.push(newPane)
     }
     setPaneState({
@@ -79,7 +74,7 @@ function Dashboard() {
       activeKey: key,
     });
   };
-
+  // tab删除pane
   let removePane = (targetKey: string) => {
     const { panes, activeKey } = paneState;
     let newActiveKey = activeKey;
@@ -104,79 +99,95 @@ function Dashboard() {
     navigate(newActiveKey)
   };
 
-  const { panes, activeKey } = paneState;
+  //只展开当前父级菜单
+  const rootSubmenuKeys = mainRoutes.map(route => { return route.path })
+  let [openKeys, setOpenKeys] = React.useState(['']);
+  let onOpenChange = (keys: string[]) => {
+    let latestOpenKey = keys.find(key => openKeys.indexOf(key) === -1) || '';
+
+    if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
+      setOpenKeys(keys);
+    } else {
+      setOpenKeys(latestOpenKey !== '' ? [latestOpenKey] : []);
+    }
+  };
+  let { panes, activeKey } = paneState;
   return (
-    <Layout>
-      <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="logo" />
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={['1']}
-          onClick={(e) => addPane(e.key)}
-        >
-          <SubMenu key="1" title="市场营销" icon={<AccountBookOutlined />}>
-            <Menu.Item key="/main/mktopp" icon={<PhoneOutlined />}>
-              营销机会管理
-              <Link to='/main/mktopp'></Link>
-            </Menu.Item>
-            <Menu.Item key="/main/ctmdev" icon={<UserAddOutlined />}>
-              客户开发计划
-              <Link to='ctmdev'></Link>
-            </Menu.Item>
-          </SubMenu>
-          <Menu.Item key="2" icon={<UserOutlined />}>
-            客户管理
-          </Menu.Item>
-          <Menu.Item key="3" icon={<CustomerServiceOutlined />}>
-            服务管理
-          </Menu.Item>
-          <Menu.Item key="4" icon={<BarChartOutlined />}>
-            统计报表
-          </Menu.Item>
-          <Menu.Item key="5" icon={<SettingOutlined />}>
-            系统设置
-          </Menu.Item>
-        </Menu>
-      </Sider>
-      <Layout className="site-layout">
-        <Header className="site-layout-background" style={{ padding: 0 }}>
-          {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-            className: 'trigger',
-            onClick: () => setCollapsed(!collapsed)
-          })}
-          <UserDropdown />
-        </Header>
-        <Layout style={{ padding: '0 24px 24px' }}>
-          <Tabs
-            type="editable-card"
-            hideAdd
-            onChange={onChange}
-            activeKey={activeKey}
-            onEdit={onEdit}
+    <div>
+      <Routes>
+        {mainRoutes.map(route => {
+          return (
+            <Route key={route.path} path={route.path} element={route.element}>
+              {route.children?.map(child => {
+                return <Route key={child.path} path={child.path} element={child.element} />
+              }
+              )}
+            </Route>
+          )
+        })}
+      </Routes>
+      <Layout>
+        <Sider trigger={null} collapsible collapsed={collapsed}>
+          <div className="logo" />
+          <Menu
+            theme='dark'
+            mode='inline'
+            defaultSelectedKeys={['mkt']}
+            onOpenChange={onOpenChange}
+            openKeys={openKeys}
+            onClick={menuOnClick}
           >
-            {panes.map(pane => (
-              <TabPane
-                tab={<Link to={pane.key}>{pane.title}</Link>}
-                key={pane.key}
-                closable={pane.closable}
-                className="site-layout-background"
-                style={{
-                  margin: '24px 16px',
-                  padding: 24,
-                  minHeight: 280,
-                }}
-              >
-                <Outlet />
-              </TabPane>
-            ))}
-          </Tabs>
+            {mainRoutes.map(route => {
+              return (
+                <SubMenu key={route.path} title={route.title} icon={route.icon}>
+                  {route.children?.map(child => {
+                    return (
+                      <Menu.Item key={child.path} icon={child.icon}>
+                        {child.title}
+                      </Menu.Item>)
+                  }
+                  )}
+                </SubMenu>)
+            })}
+          </Menu>
+        </Sider>
+        <Layout className="site-layout">
+          <Header className="site-layout-background" style={{ padding: 0 }}>
+            {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+              className: 'trigger',
+              onClick: () => setCollapsed(!collapsed)
+            })}
+            <UserDropdown />
+          </Header>
+          <Layout style={{ padding: '0 24px 24px' }}>
+            <Tabs
+              type="editable-card"
+              hideAdd
+              onChange={onChange}
+              activeKey={activeKey}
+              onEdit={onEdit}
+            >
+              {panes.map(pane => (
+                <TabPane
+                  tab={<Link to={pane.key}>{pane.title}</Link>}
+                  key={pane.key}
+                  closable={pane.key === 'wlc' ? false : true}
+                  className="site-layout-background"
+                  style={{
+                    margin: '5px 5px',
+                    padding: 24,
+                    minHeight: 280,
+                  }}
+                >
+                  <Outlet />
+                </TabPane>
+              ))}
+            </Tabs>
+          </Layout>
+          <Footer style={{ textAlign: 'center' }}>CRM ©2021 Created by solar-zhou</Footer>
         </Layout>
-        <Footer style={{ textAlign: 'center' }}>CRM ©2021 Created by solar-zhou</Footer>
       </Layout>
-    </Layout>
-
-
+    </div>
   )
 }
 

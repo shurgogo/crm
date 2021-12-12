@@ -1,6 +1,6 @@
 import React from 'react'
 
-function CtmDev() {
+function CustomerDevelop() {
   return (
     <div>
       客户开发计划      
@@ -8,4 +8,4 @@ function CtmDev() {
   )
 }
 
-export default CtmDev
+export default CustomerDevelop

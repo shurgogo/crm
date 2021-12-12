@@ -1,6 +1,6 @@
 import React from 'react'
 
-function MktOpp() {
+function MarketingOpportunity() {
   return (
     <div>
       营销机会管理
@@ -8,4 +8,4 @@ function MktOpp() {
   )
 }
 
-export default MktOpp
+export default MarketingOpportunity

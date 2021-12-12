@@ -9,7 +9,7 @@ function Login() {
   let auth = useAuth()
   let location = useLocation()
 
-  let from = location.state?.from?.pathname || "/main"
+  let from = location.state?.from?.pathname || "/main/welcome"
 
   const onFinish = (values: any) => {
     console.log("Received values of form: ", values)
