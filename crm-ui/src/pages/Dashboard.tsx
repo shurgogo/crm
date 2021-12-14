@@ -8,7 +8,7 @@ import {
 // import AuthComsumer from '../components/AuthComsumer'
 import './Dashboard.css'
 import UserDropdown from '../components/UserDropdown';
-import { mainRoutes } from '../routes/routes';
+import { mainRoutes, userRoutes } from '../routes/routes';
 import { findTitleByRelativeRoutes } from '../utils/utils';
 import Welcome from './Welcome/Welcome';
 
@@ -38,7 +38,7 @@ function Dashboard() {
     {
       path: 'wlc',
       element: <Welcome />,
-    }, ...mainRoutes])
+    }, ...mainRoutes, ...userRoutes])
   let navigate = useNavigate()
   //Sider折叠
   let [collapsed, setCollapsed] = useState(false)
@@ -75,6 +75,7 @@ function Dashboard() {
       }
       panes.push(newPane)
     }
+    console.log(panes)
     setPaneState({
       panes: panes,
       activeKey: key,
@@ -152,9 +153,10 @@ function Dashboard() {
               className: 'trigger',
               onClick: () => setCollapsed(!collapsed)
             })}
-            <UserDropdown />
+           <UserDropdown addpane={addPane}/>
           </Header>
-          <Layout style={{ padding: '0 24px 24px' }}>
+          
+          <Layout style={{ padding: '0 24px 32px' }}>
             <Tabs
               type="editable-card"
               hideAdd

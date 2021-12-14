@@ -43,6 +43,8 @@ import ServiceArchive from '../pages/Services/ServiceArchive'
 import Customers from '../pages/Customers/Customers'
 import Marketing from '../pages/Marketing/Marketing'
 import React from 'react'
+import BasicInfo from '../pages/Users/BasicInfo'
+import PasswordChange from '../pages/Users/PasswordChange'
 
 export type MyRoute = {
   title: string,
@@ -110,6 +112,19 @@ export const mainRoutes: MyRoute[] = [
       { title: '菜单管理', path: 'mnumng', element: <CustomerDevelop />, icon: <AlignCenterOutlined />, },
     ],
   },
+]
+
+export const userRoutes: MyRoute[] = [
+  {
+    title: '基本信息',
+    path: 'bscinf',
+    element: <BasicInfo/>
+  },
+  {
+    title: '修改密码',
+    path: 'pwdchg',
+    element: <PasswordChange/>
+  }
 ]
 
 export const paneRoutes = [
