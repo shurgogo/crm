@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Link, Outlet, Route, Routes, useNavigate, useRoutes } from 'react-router-dom'
-import { Layout, Menu, Tabs } from 'antd'
+import { Link, useNavigate, useRoutes } from 'react-router-dom'
+import { Layout, Menu, Tabs, ConfigProvider } from 'antd'
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -11,6 +11,7 @@ import UserDropdown from '../components/UserDropdown';
 import { mainRoutes, userRoutes } from '../routes/routes';
 import { findTitleByRelativeRoutes } from '../utils/utils';
 import Welcome from './Welcome/Welcome';
+import welcomeBg from '../assets/welcomebki.jpg';
 
 const { Header, Sider, Footer } = Layout;
 const { SubMenu } = Menu
@@ -75,7 +76,6 @@ function Dashboard() {
       }
       panes.push(newPane)
     }
-    console.log(panes)
     setPaneState({
       panes: panes,
       activeKey: key,
@@ -173,7 +173,9 @@ function Dashboard() {
                   style={{
                     margin: '5px 5px',
                     padding: 24,
-                    minHeight: 280,
+                    minHeight: 1080,
+                    backgroundImage: pane.key === 'wlc' ? 'url(' + welcomeBg+ ')':'',
+                    backgroundSize: '100% 100%',
                   }}
                 >
                   {route}
