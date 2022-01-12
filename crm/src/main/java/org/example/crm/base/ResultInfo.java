@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 public class ResultInfo {
     private Integer code = 200;
     private String msg = "success";
-
     private Object result;
 
     public void setAll(Integer code, String msg, Object result) {
