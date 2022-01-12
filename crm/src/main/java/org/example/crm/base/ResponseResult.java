@@ -9,15 +9,15 @@ import org.springframework.stereotype.Component;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResultInfo {
+public class ResponseResult {
     private Integer code = 200;
     private String msg = "success";
-    private Object result;
+    private Object data;
 
     public void setAll(Integer code, String msg, Object result) {
         this.code = code;
         this.msg = msg;
-        this.result = result;
+        this.data = result;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class ResultInfo {
         return "ResultInfo{" +
                 "code=" + code +
                 ", msg='" + msg + '\'' +
-                ", result=" + result +
+                ", result=" + data +
                 '}';
     }
 }

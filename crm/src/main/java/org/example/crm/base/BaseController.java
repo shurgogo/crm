@@ -15,21 +15,21 @@ public class BaseController {
     }
 
 
-    public ResultInfo success(){
-        return new ResultInfo();
+    public ResponseResult success(){
+        return new ResponseResult();
     }
 
-    public ResultInfo success(String msg){
-        ResultInfo resultInfo= new ResultInfo();
-        resultInfo.setMsg(msg);
-        return resultInfo;
+    public ResponseResult success(String msg){
+        ResponseResult responseResult = new ResponseResult();
+        responseResult.setMsg(msg);
+        return responseResult;
     }
 
-    public ResultInfo success(String msg, Object result){
-        ResultInfo resultInfo= new ResultInfo();
-        resultInfo.setMsg(msg);
-        resultInfo.setResult(result);
-        return resultInfo;
+    public ResponseResult success(String msg, Object result){
+        ResponseResult responseResult = new ResponseResult();
+        responseResult.setMsg(msg);
+        responseResult.setData(result);
+        return responseResult;
     }
 
 }

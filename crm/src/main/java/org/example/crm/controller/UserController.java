@@ -1,9 +1,8 @@
 package org.example.crm.controller;
 
-import org.apache.ibatis.annotations.Param;
 import org.example.crm.Service.UserService;
 import org.example.crm.base.BaseController;
-import org.example.crm.base.ResultInfo;
+import org.example.crm.base.ResponseResult;
 import org.example.crm.exception.ParamsException;
 import org.example.crm.vo.UserVo;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,20 +22,20 @@ public class UserController extends BaseController {
 
     @PostMapping("login")
     @ResponseBody
-    public ResultInfo userLogin(@RequestParam("username") String userName, @RequestParam("password") String userPwd) {
-        ResultInfo resultInfo = new ResultInfo();
+    public ResponseResult userLogin(@RequestParam("username") String userName, @RequestParam("password") String userPwd) {
+        ResponseResult responseResult = new ResponseResult();
         // 通过try catch捕获service层异常，若有异常则登录失败
         try {
             UserVo userVo = userService.userLogin(userName, userPwd);
             // 设置resultInfo的对象
-            resultInfo.setResult(userVo);
+            responseResult.setData(userVo);
         } catch (ParamsException p) {
-            resultInfo.setCode(p.getCode());
-            resultInfo.setMsg(p.getMsg());
+            responseResult.setCode(p.getCode());
+            responseResult.setMsg(p.getMsg());
         } catch (Exception e) {
-            resultInfo.setCode(500);
-            resultInfo.setMsg("登录失败");
+            responseResult.setCode(500);
+            responseResult.setMsg("登录失败");
         }
-        return resultInfo;
+        return responseResult;
     }
 }
