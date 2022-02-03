@@ -15,10 +15,8 @@ function Login() {
   const onFinish = (values: any) => {
     message.destroy()
     let user: User = { ...values }
-    console.log(user)
     loginReq(user.username, user.password).then(
       res => {
-        console.log(res.data)
         if (res.data.code === 200) {
           message.success({
             content: "登陆成功!",
